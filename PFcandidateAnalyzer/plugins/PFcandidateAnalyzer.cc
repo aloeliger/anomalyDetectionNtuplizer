@@ -67,6 +67,7 @@ private:
   std::string treeName;
   
 
+  unsigned int nObjects;
   std::vector<double> ptVector;
   std::vector<double> etaVector;
   std::vector<double> phiVector;
@@ -94,6 +95,7 @@ PFcandidateAnalyzer::PFcandidateAnalyzer(const edm::ParameterSet& iConfig):
   treeName = iConfig.getParameter<std::string>("treeName");
   
   theTree = theFileService->make< TTree >(treeName.c_str(), "List of pf candidate 4 vector and charge info in the event");
+  theTree->Branch("nObjects", &nObjects);
   theTree->Branch("ptVector", &ptVector);
   theTree->Branch("etaVector", &etaVector);
   theTree->Branch("phiVector", &phiVector);
@@ -129,6 +131,7 @@ PFcandidateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       theCandidate++)
     {
       if(std::abs(theCandidate->pdgId())!=candidateCode) continue;
+      nObjects++;
       ptVector.push_back(theCandidate->pt());
       etaVector.push_back(theCandidate->eta());
       phiVector.push_back(theCandidate->phi());
@@ -136,7 +139,7 @@ PFcandidateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       chargeVector.push_back(theCandidate->charge());
     }
   theTree->Fill();
-  
+  nObjects = 0;
   ptVector.clear();
   etaVector.clear();
   phiVector.clear();
