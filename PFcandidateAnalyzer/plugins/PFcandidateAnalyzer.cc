@@ -67,7 +67,7 @@ private:
   std::string treeName;
   
 
-  unsigned int nObjects;
+  unsigned int nObjects = 0;
   std::vector<double> ptVector;
   std::vector<double> etaVector;
   std::vector<double> phiVector;
