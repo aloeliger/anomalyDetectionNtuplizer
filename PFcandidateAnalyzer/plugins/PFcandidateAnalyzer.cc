@@ -72,8 +72,16 @@ private:
   std::vector<double> etaVector;
   std::vector<double> phiVector;
   std::vector<double> massVector;
+  std::vector<double> etVector;
   std::vector<int> chargeVector;
-
+  std::vector<double> mtVector;
+  std::vector<double> vxVector;
+  std::vector<double> vyVector;
+  std::vector<double> vzVector;
+  std::vector<double> dxyVector;
+  std::vector<double> dzVector;
+  std::vector<size_t> numberOfDaughtersVector;
+  std::vector<size_t> numberOfMothersVector;
 };
 
 //
@@ -100,7 +108,16 @@ PFcandidateAnalyzer::PFcandidateAnalyzer(const edm::ParameterSet& iConfig):
   theTree->Branch("etaVector", &etaVector);
   theTree->Branch("phiVector", &phiVector);
   theTree->Branch("massVector", &massVector);
+  theTree->Branch("etVector", &etVector);
   theTree->Branch("chargeVector", &chargeVector);
+  theTree->Branch("mtVector", &mtVector);
+  theTree->Branch("vxVector", &vxVector);
+  theTree->Branch("vyVector", &vyVector);
+  theTree->Branch("vzVector", &vzVector);
+  theTree->Branch("dxyVector", &dxyVector);
+  theTree->Branch("dzVector", &dzVector);
+  theTree->Branch("numberOfDaughtersVector", &numberOfDaughtersVector);
+  theTree->Branch("numberOfMothersVector", &numberOfMothersVector);
 }
 
 
@@ -136,15 +153,34 @@ PFcandidateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       etaVector.push_back(theCandidate->eta());
       phiVector.push_back(theCandidate->phi());
       massVector.push_back(theCandidate->mass());
+      etVector.push_back(theCandidate->et());
       chargeVector.push_back(theCandidate->charge());
+      mtVector.push_back(theCandidate->mt());
+      vxVector.push_back(theCandidate->vx());
+      vyVector.push_back(theCandidate->vy());
+      vzVector.push_back(theCandidate->vz());
+      dxyVector.push_back(theCandidate->dxy());
+      dzVector.push_back(theCandidate->dz());
+      numberOfDaughtersVector.push_back(theCandidate->numberOfDaughters());
+      numberOfMothersVector.push_back(theCandidate->numberOfMothers());
     }
   theTree->Fill();
+
   nObjects = 0;
   ptVector.clear();
   etaVector.clear();
   phiVector.clear();
   massVector.clear();
+  etVector.clear();
   chargeVector.clear();
+  mtVector.clear();
+  vxVector.clear();
+  vyVector.clear();
+  vzVector.clear();
+  dxyVector.clear();
+  dzVector.clear();
+  numberOfDaughtersVector.clear();
+  numberOfMothersVector.clear();
 }
 
 
