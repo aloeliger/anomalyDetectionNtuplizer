@@ -22,6 +22,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5) )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
@@ -36,14 +37,32 @@ process.TFileService = cms.Service("TFileService",
                                    fileName=cms.string(options.outputFile)
 )
 
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+                                                   randomSelectionFilter = cms.PSet(
+                                                       initialSeed = cms.untracked.uint32(1234),
+                                                       engineName = cms.untracked.string('TRandom3')
+                                                   ),                                                   
+)
+
 #Modules to be run
 process.load("anomalyDetectionNtuplizer.basicEventInfo.basicEventInfo_cfi")
-process.basicEventInfoPath = cms.Path(process.basicEventInfo)
+#process.basicEventInfoPath = cms.Path(process.basicEventInfo)
 process.load("anomalyDetectionNtuplizer.PFcandidateAnalyzer.PFcandSequence_cfi")
-process.PFcandPath = cms.Path(process.PFcandSequence)
+#process.PFcandPath = cms.Path(process.PFcandSequence)
 
-process.schedule = cms.Schedule(process.basicEventInfoPath,
-                                process.PFcandPath)
+#process.load("anomalyDetectionNtuplizer.randomSelectionFilter.randomSelectionFilter_cfi")
+#process.filterTask = cms.Task(process.randomSelectionFilter)
+#process.filterPath = cms.Path(process.filterTask)
+#process.filterPath = cms.Path(process.randomSelectionFilter)
+#process.filterPath.associate(process.filterTask)
+
+process.thePath = cms.Path(
+#    process.randomSelectionFilter +
+    process.basicEventInfo +
+    process.PFcandSequence
+)
+
+process.schedule = cms.Schedule(process.thePath)
 
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
