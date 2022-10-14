@@ -80,8 +80,6 @@ private:
   std::vector<double> vzVector;
   std::vector<double> dxyVector;
   std::vector<double> dzVector;
-  std::vector<size_t> numberOfDaughtersVector;
-  std::vector<size_t> numberOfMothersVector;
 };
 
 //
@@ -116,8 +114,6 @@ PFcandidateAnalyzer::PFcandidateAnalyzer(const edm::ParameterSet& iConfig):
   theTree->Branch("vzVector", &vzVector);
   theTree->Branch("dxyVector", &dxyVector);
   theTree->Branch("dzVector", &dzVector);
-  theTree->Branch("numberOfDaughtersVector", &numberOfDaughtersVector);
-  theTree->Branch("numberOfMothersVector", &numberOfMothersVector);
 }
 
 
@@ -161,8 +157,6 @@ PFcandidateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
       vzVector.push_back(theCandidate->vz());
       dxyVector.push_back(theCandidate->dxy());
       dzVector.push_back(theCandidate->dz());
-      numberOfDaughtersVector.push_back(theCandidate->numberOfDaughters());
-      numberOfMothersVector.push_back(theCandidate->numberOfMothers());
     }
   theTree->Fill();
 
@@ -179,8 +173,6 @@ PFcandidateAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   vzVector.clear();
   dxyVector.clear();
   dzVector.clear();
-  numberOfDaughtersVector.clear();
-  numberOfMothersVector.clear();
 }
 
 
