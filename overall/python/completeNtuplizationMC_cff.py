@@ -7,7 +7,6 @@ options = VarParsing('analysis')
 options.parseArguments()
 
 process = cms.Process("evenNtuplization", Run2_2018)
-
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
@@ -18,7 +17,7 @@ process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
@@ -35,29 +34,11 @@ process.TFileService = cms.Service("TFileService",
                                    fileName=cms.string(options.outputFile)
 )
 
-process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-                                                        randomSelectionFilter = cms.PSet(
-                                                        initialSeed = cms.untracked.uint32(1234),
-                                                        engineName = cms.untracked.string('TRandom3')
-                                                   ),                                                   
-)
-
 #Modules to be run
 process.load("anomalyDetectionNtuplizer.basicEventInfo.basicEventInfo_cfi")
-#process.load("anomalyDetectionNtuplizer.PFcandidateAnalyzer.PFcandSequence_cfi")
 process.load("anomalyDetectionNtuplizer.recoObjectNtuplization.recoObjectNtuplizer_cfi")
-process.load("anomalyDetectionNtuplizer.randomSelectionFilter.randomSelectionFilter_cfi")
-process.randomSelectionFilter.reductionRate = 500.0 #we want a complete reduction by about a factor of 1000, and the event number is a factor 2
-from anomalyDetectionNtuplizer.evenOddFiltering.eventNumFilters_cfi import oddEventNumFilter
-process.eventNumFilter = oddEventNumFilter
-#process.filterTask = cms.Task(process.randomSelectionFilter)
-#process.filterPath = cms.Path(process.filterTask)
-#process.randomFilterPath = cms.Path(process.randomSelectionFilter)
-#process.filterPath.associate(process.filterTask)
 
 process.thePath = cms.Path(
-    process.eventNumFilter + 
-    process.randomSelectionFilter +
     process.basicEventInfo +
     process.recoObjectNtuplesSequence
 )
@@ -71,4 +52,3 @@ process = customiseEarlyDelete(process)
 # Multi-threading
 process.options.numberOfThreads=cms.untracked.uint32(1)
 process.options.numberOfStreams=cms.untracked.uint32(0)
-
